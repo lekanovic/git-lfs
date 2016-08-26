@@ -46,7 +46,7 @@ var (
 	//   printf "status:lfs:404" > 404.dat
 	//
 	contentHandlers = []string{
-		"status-batch-403", "status-batch-404", "status-batch-410", "status-batch-422", "status-batch-500",
+		"status-batch-403", "status-batch-404", "status-batch-410", "status-batch-422", "status-batch-500", "status-batch-503",
 		"status-storage-403", "status-storage-404", "status-storage-410", "status-storage-422", "status-storage-500",
 		"status-legacy-404", "status-legacy-410", "status-legacy-422", "status-legacy-403", "status-legacy-500",
 		"status-batch-resume-206", "batch-resume-fail-fallback", "return-expired-action", "return-invalid-size",
@@ -383,6 +383,8 @@ func lfsBatchHandler(w http.ResponseWriter, r *http.Request, id, repo string) {
 			o.Err = &lfsError{Code: 422, Message: "welp"}
 		case "status-batch-500":
 			o.Err = &lfsError{Code: 500, Message: "welp"}
+		case "status-batch-503":
+			o.Err = &lfsError{Code: 503, Message: "welp"}
 		default: // regular 200 response
 			if handler == "return-invalid-size" {
 				o.Size = -1

@@ -18,9 +18,11 @@ push_fail_test() {
   git commit -m "welp"
 
   set +e
-  git push origin master
-  res="$?"
+  git push origin master 2>&1 | tee push.log
+  res="${PIPESTATUS[0]}"
   set -e
+
+  cat push.log
 
   refute_server_object "$reponame" "$(calc_oid "$contents")"
   if [ "$res" = "0" ]; then
@@ -106,5 +108,13 @@ begin_test "push: upload file with api 500"
   set -e
 
   push_fail_test "status-batch-500"
+)
+end_test
+
+begin_test "push: upload file with api 503"
+(
+  set -e
+
+  push_fail_test "status-batch-503"
 )
 end_test
